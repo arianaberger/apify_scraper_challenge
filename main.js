@@ -6,7 +6,7 @@ Apify.main(async () => {
 
     // Get queue and enqueue first url.
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://news.ycombinator.com/' }));
+    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
 
     // Create crawler.
     const crawler = new Apify.PuppeteerCrawler({
@@ -25,7 +25,7 @@ Apify.main(async () => {
 
     // Run crawler.
     await crawler.run();
-    
+
 });
 
 
@@ -36,11 +36,9 @@ const getEventData = async ({ page, request }) => {
     const title = await page.title();
     const posts = await page.$$('.athing');
 
-    console.log(`Page ${request.url} succeeded and it has ${posts.length} posts.`);
+    console.log(`Page ${request.url} succeeded`);
 
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
 }
-
-
