@@ -1,7 +1,6 @@
 const Apify = require('apify');
 const util = require('util');
 
-
 Apify.main(async () => {
 
     // Get queue and enqueue first url.
@@ -28,16 +27,33 @@ Apify.main(async () => {
 
 });
 
-
-
 const getEventData = async ({ page, request }) => {
 
     // Function to get data from page
-    const title = await page.title();
-    const posts = await page.$$('.athing');
+    // const title = await page.title();
+    // const posts = await page.$$('.athing');
+    let event = {
+      url:
+      description:
+      date:
+      time:
+      recurring:
+      place: {
+        street:
+        city:
+        state:
+        postal:
+      },
+      details: {
+        contact:
+        phone:
+        admission:
+      },
+      timestamp:
+    }
 
     console.log(`Page ${request.url} succeeded`);
-
+    console.log(data);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
