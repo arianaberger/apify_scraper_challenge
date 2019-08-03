@@ -7,6 +7,7 @@ Apify.main(async () => {
     const requestQueue = await Apify.openRequestQueue();
     await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
 
+    console.log(requestQueue);
     // Create crawler.
     const crawler = new Apify.PuppeteerCrawler({
         requestQueue,
@@ -30,30 +31,46 @@ Apify.main(async () => {
 const getEventData = async ({ page, request }) => {
 
     // Function to get data from page
-    // const title = await page.title();
-    // const posts = await page.$$('.athing');
+    const title = await page.title();
+    const posts = await page.$$('.athing');
+
+    const url = await page.url();
+    const description = await page.$$();
+    const date = await page.$$('.dates');
+    const time = await page.$$('.detail-c2 > div:nth-child(7)');
+    // const recurring = await page.;
+    // const street = await page.;
+    // const city = await page.;
+    // const state = await page.;
+    // const postal = await page.;
+    // const contact = await page.;
+    // const phone = await page.;
+    // const admission = await page.;
+    // const timestamp = await page.;
+
+    //Create Event object
     let event = {
-      url:
-      description:
-      date:
-      time:
-      recurring:
+      url: url,
+      description: description,
+      date: date,
+      time: time,
+      recurring: recurring,
       place: {
-        street:
-        city:
-        state:
-        postal:
+        street: street,
+        city: city,
+        state: state,
+        postal: postal
       },
       details: {
-        contact:
-        phone:
-        admission:
+        contact: contact,
+        phone: phone,
+        admission: admission
       },
-      timestamp:
+      timestamp: timestamp
     }
 
     console.log(`Page ${request.url} succeeded`);
-    console.log(data);
+    console.log("EVENT DATA IS:", event);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
