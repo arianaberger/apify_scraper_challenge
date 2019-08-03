@@ -32,23 +32,20 @@ const getEventData = async ({ page, request }) => {
 
     // Function to get data from page
     const title = await page.title();
-    const posts = await page.$$('.athing');
 
     const url = await page.url();
     const description = await page.$eval('div[class^=description] p', (el => el.textContent));
     const date = await page.$eval('div[class=dates]', (el => el.textContent));
     const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent));
     const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
-    const street = await page.$eval('div[class=adrs]', (el => el.textContent));
-    const city = await page.$$('.adrs');
-    const state = await page.$$('.adrs');
-    const postal = await page.$$('.adrs');
+    const address = await page.$eval('div[class=adrs]', (el => el.textContent));
     const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent));
     const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent));
     const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent));
     // const lastRunTimestamp = await page.$$eval('time', (els) => els[1].getAttribute('datetime'));
     // const timestamp = new Date(Number(lastRunTimestamp));
     const timestamp = "timestamp"
+
     //Create Event object
     let event = {
       url: url,
@@ -57,10 +54,10 @@ const getEventData = async ({ page, request }) => {
       time: time.slice(7),
       recurring: recurring,
       place: {
-        street: street,
-        city: city,
-        state: state,
-        postal: postal
+        street: address.split('|')[0].trim(),
+        city: address.split('|')[1].split(',')[0].trim(),
+        state: address.split('|')[1].split(',')[1].split(' ')[1],
+        postal: address.split('|')[1].split(',')[1].split(' ')[2]
       },
       details: {
         contact: contact.slice(9),
