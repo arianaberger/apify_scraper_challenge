@@ -35,25 +35,26 @@ const getEventData = async ({ page, request }) => {
     const posts = await page.$$('.athing');
 
     const url = await page.url();
-    const description = await page.$$();
-    const date = await page.$$('.dates');
-    const time = await page.$$('.detail-c2 > div:nth-child(7)');
-    // const recurring = await page.;
-    // const street = await page.;
-    // const city = await page.;
-    // const state = await page.;
-    // const postal = await page.;
-    // const contact = await page.;
-    // const phone = await page.;
-    // const admission = await page.;
-    // const timestamp = await page.;
-
+    const description = await page.$eval('div[class^=description] p', (el => el.textContent));
+    const date = await page.$eval('div[class=dates]', (el => el.textContent));
+    const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent));
+    const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
+    const street = await page.$eval('div[class=adrs]', (el => el.textContent));
+    const city = await page.$$('.adrs');
+    const state = await page.$$('.adrs');
+    const postal = await page.$$('.adrs');
+    const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent));
+    const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent));
+    const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent));
+    // const lastRunTimestamp = await page.$$eval('time', (els) => els[1].getAttribute('datetime'));
+    // const timestamp = new Date(Number(lastRunTimestamp));
+    const timestamp = "timestamp"
     //Create Event object
     let event = {
       url: url,
       description: description,
       date: date,
-      time: time,
+      time: time.slice(7),
       recurring: recurring,
       place: {
         street: street,
@@ -62,15 +63,15 @@ const getEventData = async ({ page, request }) => {
         postal: postal
       },
       details: {
-        contact: contact,
-        phone: phone,
-        admission: admission
+        contact: contact.slice(9),
+        phone: phone.slice(7),
+        admission: admission.slice(11)
       },
       timestamp: timestamp
     }
 
     console.log(`Page ${request.url} succeeded`);
-    console.log("EVENT DATA IS:", event);
+    console.log("***EVENT DATA IS:", event);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
