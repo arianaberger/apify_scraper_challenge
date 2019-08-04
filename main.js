@@ -28,9 +28,8 @@ Apify.main(async () => {
 
 });
 
+// Function to get data from page
 const getEventData = async ({ page, request }) => {
-
-    // Function to get data from page
     const title = await page.title();
 
     const url = await page.url();
@@ -71,4 +70,23 @@ const getEventData = async ({ page, request }) => {
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
+}
+
+const pageFunction = async (page) => {
+  let timeout;
+  const buttonSelector = 'a.arrow.next';
+
+  while (true) {
+    log.info('Waiting for the "next" button...');
+    try {
+        await page.waitFor(buttonSelector, { timeout }); // Default timeout first time.
+        timeout = 2000; // 2 sec timeout after the first.
+    } catch (err) {
+        // Ignore the timeout error.
+        log.info('Could not find the "next" button, we\'ve reached the end.');
+        break;
+    }
+    log.info('Clicking the "next" button.');
+    await page.click(buttonSelector);
+  }
 }
