@@ -9,9 +9,12 @@ Apify.main(async () => {
     console.log(requestQueue);
 
     // Paginate up to 5 pages for now
-    for (let i = 0, i < 5, i++) {
+    for (let i = 0; i < 5; i++) {
+
       // Iterate over each event link
       getEventLinks().forEach(link => {
+        requestQueue.addRequest(new Apify.Request({ url: link }));
+
         // Create crawler.
         const crawler = new Apify.PuppeteerCrawler({
             // How to dynamically make sure the requestQueue is updated for each link?
@@ -40,11 +43,14 @@ Apify.main(async () => {
 
 // This function should return an array of links from each event page
 const getEventLinks = async ({ page, request }) => {
-    // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
-    const pageLinks = []
-    const getLinks = await page.$eval('div[class^=eventsContainer] a:nth-of-type(10)', (el => el.textContent));
-    // Insert links into the pageLinks array and then return the array
-    return pageLinks
+  // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
+    const pageLinks = [];
+    const getLinks = await page.$('div.eventsContainer');
+  // Insert links into the pageLinks array and then return the array
+    // return pageLinks;
+    console.log(getLinks);
+    let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
+    return arr;
 }
 
 // Function to get data from page
