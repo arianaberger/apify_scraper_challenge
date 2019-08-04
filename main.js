@@ -66,13 +66,15 @@ const getEventData = async ({ page, request }) => {
     }
 
     console.log(`Page ${request.url} succeeded`);
+    // Return scraped event data
     console.log("***EVENT DATA IS:", event);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
 }
 
-const pageFunction = async (page) => {
+const getEventLinks = async () => {
+  let url = 'https://www.visithoustontexas.com/events/';
   let timeout;
   const buttonSelector = 'a.arrow.next';
 
@@ -90,3 +92,9 @@ const pageFunction = async (page) => {
     await page.click(buttonSelector);
   }
 }
+
+// Get event links, iterate through them
+// div.eventsContainer > a
+
+// On main page, iterate through event links and gather URLs
+// Send each URL to the request Queue and get event data for each page
