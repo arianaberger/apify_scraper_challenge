@@ -42,11 +42,10 @@ const getEventData = async ({ page, request }) => {
     const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent));
     const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent));
     const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent));
-    // const lastRunTimestamp = await page.$$eval('time', (els) => els[1].getAttribute('datetime'));
-    // const timestamp = new Date(Number(lastRunTimestamp));
-    const timestamp = "timestamp"
+    // Time is monotonic - does it need to be converted?
+    const timestamp = await page.metrics();
 
-    //Create Event object
+    // Create Event object
     let event = {
       url: url,
       description: description,
@@ -64,7 +63,7 @@ const getEventData = async ({ page, request }) => {
         phone: phone.slice(7),
         admission: admission.slice(11)
       },
-      timestamp: timestamp
+      timestamp: timestamp["Timestamp"]
     }
 
     console.log(`Page ${request.url} succeeded`);
