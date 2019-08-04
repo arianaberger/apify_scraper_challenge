@@ -35,46 +35,53 @@ const getEventData = async ({ page, request }) => {
     const url = await page.url();
     const description = await page.$eval('div[class^=description] p', (el => el.textContent));
     const date = await page.$eval('div[class=dates]', (el => el.textContent));
-    const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent));
+    const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent.slice(7)));
     const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
-    const address = await page.$eval('div[class=adrs]', (el => el.textContent));
-    const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent));
-    const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent));
-    const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent));
+    const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent.slice(9)));
+    const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent.slice(7)));
+    const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent.slice(11)));
+
     // Time is monotonic - does it need to be converted?
-    const timestamp = await page.metrics();
+    const getTimestamp = await page.metrics();
+    const timestamp = getTimestamp["Timestamp"];
+
+    const address = await page.$eval('div[class=adrs]', (el => el.textContent));
+    const street = address.split('|')[0].trim();
+    const city = address.split('|')[1].split(',')[0].trim();
+    const state = address.split('|')[1].split(',')[1].split(' ')[1];
+    const postal = address.split('|')[1].split(',')[1].split(' ')[2];
 
     // Create Event object
     let event = {
       url: url,
       description: description,
       date: date,
-      time: time.slice(7),
+      time: time,
       recurring: recurring,
       place: {
-        street: address.split('|')[0].trim(),
-        city: address.split('|')[1].split(',')[0].trim(),
-        state: address.split('|')[1].split(',')[1].split(' ')[1],
-        postal: address.split('|')[1].split(',')[1].split(' ')[2]
+        street: street,
+        city: city,
+        state: state,
+        postal: postal
       },
       details: {
-        contact: contact.slice(9),
-        phone: phone.slice(7),
-        admission: admission.slice(11)
+        contact: contact,
+        phone: phone,
+        admission: admission
       },
-      timestamp: timestamp["Timestamp"]
+      timestamp: timestamp
     }
 
-    console.log(`Page ${request.url} succeeded`);
     // Return scraped event data
     console.log("***EVENT DATA IS:", event);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
+
+    return event;
 }
 
-const getEventLinks = async () => {
-  let url = 'https://www.visithoustontexas.com/events/';
+const getPages = async () => {
   let timeout;
   const buttonSelector = 'a.arrow.next';
 
