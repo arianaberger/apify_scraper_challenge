@@ -6,7 +6,7 @@ Apify.main(async () => {
     // Get queue and enqueue first url.
     const requestQueue = await Apify.openRequestQueue();
     // Change to main events page when able to iterate over events and paginate
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
+    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/events/' }));
     console.log(requestQueue);
 
     // // Tried to paginate with a for loop and add event links, but await only works in async functions
@@ -44,48 +44,59 @@ Apify.main(async () => {
 const getEventData = async ({ page, request }) => {
     const title = await page.title();
 
-    const url = await page.url();
-    const description = await page.$eval('div[class^=description] p', (el => el.textContent));
-    const date = await page.$eval('div[class=dates]', (el => el.textContent));
-    const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent.slice(7)));
-    const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
-    const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent.slice(9)));
-    const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent.slice(7)));
-    const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent.slice(11)));
+    // const url = await page.url();
+    // const description = await page.$eval('div[class^=description] p', (el => el.textContent));
+    // const date = await page.$eval('div[class=dates]', (el => el.textContent));
+    // const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent.slice(7)));
+    // const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
+    // const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent.slice(9)));
+    // const phone = await page.$eval('div[class^=detail-c2] div:nth-of-type(6)', (el => el.textContent.slice(7)));
+    // const admission = await page.$eval('div[class^=detail-c2] div:nth-of-type(8)', (el => el.textContent.slice(11)));
+    //
+    // // Time is monotonic - does it need to be converted?
+    // const getTimestamp = await page.metrics();
+    // const timestamp = getTimestamp["Timestamp"];
+    //
+    // const address = await page.$eval('div[class=adrs]', (el => el.textContent));
+    // const street = address.split('|')[0].trim();
+    // const city = address.split('|')[1].split(',')[0].trim();
+    // const state = address.split('|')[1].split(',')[1].split(' ')[1];
+    // const postal = address.split('|')[1].split(',')[1].split(' ')[2];
+    //
+    // // Create Event object
+    // let event = {
+    //   url: url,
+    //   description: description,
+    //   date: date,
+    //   time: time,
+    //   recurring: recurring,
+    //   place: {
+    //     street: street,
+    //     city: city,
+    //     state: state,
+    //     postal: postal
+    //   },
+    //   details: {
+    //     contact: contact,
+    //     phone: phone,
+    //     admission: admission
+    //   },
+    //   timestamp: timestamp
+    // }
+    //
+    // // Return scraped event data
+    // console.log("***EVENT DATA IS:", event);
 
-    // Time is monotonic - does it need to be converted?
-    const getTimestamp = await page.metrics();
-    const timestamp = getTimestamp["Timestamp"];
-
-    const address = await page.$eval('div[class=adrs]', (el => el.textContent));
-    const street = address.split('|')[0].trim();
-    const city = address.split('|')[1].split(',')[0].trim();
-    const state = address.split('|')[1].split(',')[1].split(' ')[1];
-    const postal = address.split('|')[1].split(',')[1].split(' ')[2];
-
-    // Create Event object
-    let event = {
-      url: url,
-      description: description,
-      date: date,
-      time: time,
-      recurring: recurring,
-      place: {
-        street: street,
-        city: city,
-        state: state,
-        postal: postal
-      },
-      details: {
-        contact: contact,
-        phone: phone,
-        admission: admission
-      },
-      timestamp: timestamp
+    // Trying to get event links!
+    const getLinks = await page.$$eval('#eventsContainer', (arr => arr[0]));
+    const linksArr = []
+    function gatherLinks = (getLinks) => {
+      getLinks.forEach(el => {
+        debugger
+      })
     }
 
-    // Return scraped event data
-    console.log("***EVENT DATA IS:", event);
+    console.log(getLinks);
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
