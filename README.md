@@ -1,4 +1,4 @@
-<h4>Instructions</h4>
+<h3>Instructions</h3>
 
 Clone this repo
 
