@@ -5,17 +5,18 @@ Apify.main(async () => {
 
     // Get queue and enqueue first url.
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/events/' }));
+    // Change to main events page when able to iterate over events and paginate
+    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
     console.log(requestQueue);
 
-    // Paginate up to 5 pages for now
-    for (let i = 0; i < 5; i++) {
+    // // Tried to paginate with a for loop and add event links, but await only works in async functions
+    // for (let i = 0; i < 5; i++) {
+    //
+    //   // Iterate over each event link
+    //   getEventLinks().forEach(link => {
+    //     await requestQueue.addRequest(new Apify.Request({ url: link }));
 
-      // Iterate over each event link
-      getEventLinks().forEach(link => {
-        requestQueue.addRequest(new Apify.Request({ url: link }));
-
-        // Create crawler.
+        // Create crawler
         const crawler = new Apify.PuppeteerCrawler({
             // How to dynamically make sure the requestQueue is updated for each link?
             requestQueue,
@@ -34,24 +35,10 @@ Apify.main(async () => {
         // Run crawler.
         await crawler.run();
 
-        // Go to next page
-        getNextPage();
+        // // Go to next page
+        // getNextPage();
 
-      })
-    }
 });
-
-// This function should return an array of links from each event page
-const getEventLinks = async ({ page, request }) => {
-  // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
-    const pageLinks = [];
-    const getLinks = await page.$('div.eventsContainer');
-  // Insert links into the pageLinks array and then return the array
-    // return pageLinks;
-    console.log(getLinks);
-    let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
-    return arr;
-}
 
 // Function to get data from page
 const getEventData = async ({ page, request }) => {
@@ -102,6 +89,20 @@ const getEventData = async ({ page, request }) => {
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null));
+}
+
+///////////////Attempt at steps 2 and 3///////////////
+
+// This function should return an array of links from each event page
+const getEventLinks = async ({ page, request }) => {
+  // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
+    const pageLinks = [];
+    const getLinks = await page.$('div.eventsContainer');
+  // Insert links into the pageLinks array and then return the array
+    // return pageLinks;
+    console.log(getLinks);
+    let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
+    return arr;
 }
 
 const getNextPage = async () => {
