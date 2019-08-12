@@ -16,8 +16,7 @@
 		"jest": "^24.8.0"
 	},
 	"scripts": {
-		"test": "mocha --recursive test",
-    "server": "https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/"
+		"test": "mocha --recursive test"
 	},
 	"repository": {
 		"type": "git",
