@@ -5,11 +5,19 @@
 	"main": "main.js",
 	"dependencies": {
 		"apify": "^0.15.2",
+		"chai": "^4.1.2",
+		"http-server": "^0.10.0",
+		"mocha": "^4.0.1",
+		"puppeteer": "^0.13.0",
 		"util": "^0.11.1"
 	},
-	"devDependencies": {},
+	"devDependencies": {
+		"faker": "^4.1.0",
+		"jest": "^24.8.0"
+	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "mocha --recursive test",
+    "server": "https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/"
 	},
 	"repository": {
 		"type": "git",
