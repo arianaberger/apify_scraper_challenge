@@ -24,7 +24,7 @@ Apify.main(async () => {
             // This page is executed for each request.
             // If request failes then it's retried 3 times.
             // Parameter page is Puppeteers page object with loaded page.
-            handlePageFunction: getEventData,
+            handlePageFunction: getNextPage,
 
             // If request failed 4 times then this function is executed.
             handleFailedRequestFunction: async ({ request }) => {
@@ -40,9 +40,9 @@ Apify.main(async () => {
 
 });
 
-// Function to get data from page
-const getEventData = async ({ page, request }) => {
-    const title = await page.title();
+// // Function to get data from page
+// const getEventData = async ({ page, request }) => {
+//     const title = await page.title();
 
     // const url = await page.url();
     // const description = await page.$eval('div[class^=description] p', (el => el.textContent));
@@ -88,33 +88,33 @@ const getEventData = async ({ page, request }) => {
     // console.log("***EVENT DATA IS:", event);
 
     // Trying to get event links!
-    const getLinks = await page.$$eval('#eventsContainer', (arr => arr[0]));
-    const linksArr = []
-    function gatherLinks = (getLinks) => {
-      getLinks.forEach(el => {
-        debugger
-      })
-    }
-
-    console.log(getLinks);
-
-    // Log data (util is a tool that nicely formats objects in the console)
-    console.log(util.inspect(title, false, null));
-}
+    // const getLinks = await page.$$eval('#eventsContainer', (arr => arr[0]));
+    // const linksArr = []
+    // function gatherLinks = (getLinks) => {
+    //   getLinks.forEach(el => {
+    //     debugger
+    //   })
+    // }
+    //
+    // console.log(getLinks);
+    //
+    // // Log data (util is a tool that nicely formats objects in the console)
+    // console.log(util.inspect(title, false, null));
+// }
 
 ///////////////Attempt at steps 2 and 3///////////////
 
 // This function should return an array of links from each event page
-const getEventLinks = async ({ page, request }) => {
-  // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
-    const pageLinks = [];
-    const getLinks = await page.$('div.eventsContainer');
-  // Insert links into the pageLinks array and then return the array
-    // return pageLinks;
-    console.log(getLinks);
-    let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
-    return arr;
-}
+// const getEventLinks = async ({ page, request }) => {
+//   // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
+//     const pageLinks = [];
+//     const getLinks = await page.$('div.eventsContainer');
+//   // Insert links into the pageLinks array and then return the array
+//     // return pageLinks;
+//     console.log(getLinks);
+//     let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
+//     return arr;
+// }
 
 const getNextPage = async () => {
     let timeout;
