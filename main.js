@@ -1,40 +1,40 @@
 const Apify = require('apify');
 const util = require('util');
+const fs = require('fs');
 
 Apify.main(async () => {
 
-    const homepage = 'https://www.visithoustontexas.com/events/'
+    // const homepage = 'https://www.visithoustontexas.com/events/'
+    //
+    // const requestQueue = await Apify.openRequestQueue();
+    // await requestQueue.addRequest(new Apify.Request({url: homepage}))
+    //
+    // const paginateCrawler = new Apify.PuppeteerCrawler({
+    //   requestQueue,
+    //   handlePageFunction: getEventURLs,
+    //
+    //   // If request failed 4 times then this function is executed.
+    //   handleFailedRequestFunction: async ({ request }) => {
+    //       console.log(`Request ${request.url} failed 4 times`);
+    //   },
+    // })
+    //
+    // await paginateCrawler.run();
 
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest(new Apify.Request({url: homepage}))
+    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
+        const eventCrawler = new Apify.PuppeteerCrawler({
+            requestQueue,
+            handlePageFunction: getEventData,
 
-    const paginateCrawler = new Apify.PuppeteerCrawler({
-      requestQueue,
-      handlePageFunction: getEventURLs,
+            // If request failed 4 times then this function is executed.
+            handleFailedRequestFunction: async ({ request }) => {
+                console.log(`Request ${request.url} failed 4 times`);
+            },
+        });
 
-      // If request failed 4 times then this function is executed.
-      handleFailedRequestFunction: async ({ request }) => {
-          console.log(`Request ${request.url} failed 4 times`);
-      },
-    })
-
-    await paginateCrawler.run();
-    //
-    // const eventQueue = await Apify.openRequestQueue();
-    // await eventQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
-    //     const eventCrawler = new Apify.PuppeteerCrawler({
-    //         eventQueue,
-    //         handlePageFunction: getEventData,
-    //
-    //         // If request failed 4 times then this function is executed.
-    //         handleFailedRequestFunction: async ({ request }) => {
-    //             console.log(`Request ${request.url} failed 4 times`);
-    //         },
-    //     });
-    //
-    //     // Run crawler.
-    //     await crawler.run();
-
+        // Run crawler.
+        await eventCrawler.run();
 
 });
 
@@ -82,48 +82,50 @@ const getEventData = async ({ page, request }) => {
       timestamp: timestamp
     }
 
-    // Return scraped event data
-    console.log("***EVENT DATA IS:", event);
+    // Print and save scraped event data
+    console.log("EVENT DATA:", event)
+    const jsonData = JSON.stringify(event);
+    fs.writeFile('eventData.json', jsonData, function (err) {
+      if (err) {
+        console.log("There was an error saving event data")
+        return console.log(err)
+      }
+      console.log("Event data has been saved")
+    })
 
     // Log data (util is a tool that nicely formats objects in the console)
     console.log(util.inspect(title, false, null, true));
     //true makes nice and colorful
 }
 
-///////////////Attempt at steps 2 and 3///////////////
 
-// This function should return an array of links from each event page
 const getEventURLs = async ({ page, request }) => {
+    // This works to get a url in the console, isn't translating here for some reason:
+    // document.querySelectorAll('div.info div.title')[0].querySelector('a').href
     const getURLs = await page.$$eval('div.info div.title', (el =>
       el.map((div) => console.log(div))
     ));
 
-    console.log("Event URLS:", getURLs)
-
-    // const urlArray = getURLs.map(div => div.querySelector('a').href);
-    // console.log(urlArray)
-    // getLinks.forEach(link => {
-    //   Apify.addRequest (add to the request queue)
-    //
-    // })
-
+    getURLs.forEach(link => {
+      Apify.addRequest(new Apify.Request({url: link}))
+    })
 }
 
-// const paginate = async () => {
-//     let timeout;
-//     const buttonSelector = 'a.arrow.next';
-//
-//     while (true) {
-//       log.info('Waiting for the "next" button...');
-//       try {
-//           await page.waitFor(buttonSelector, { timeout }); // Default timeout first time.
-//           timeout = 2000; // 2 sec timeout after the first.
-//       } catch (err) {
-//           // Ignore the timeout error.
-//           log.info('Could not find the "next" button, we\'ve reached the end.');
-//           break;
-//       }
-//       log.info('Clicking the "next" button.');
-//       await page.click(buttonSelector);
-//     }
- // }
+const paginate = async () => {
+    let timeout;
+    const buttonSelector = 'a.arrow.next';
+
+    while (true) {
+      log.info('Waiting for the "next" button...');
+      try {
+          await page.waitFor(buttonSelector, { timeout }); // Default timeout first time.
+          timeout = 2000; // 2 sec timeout after the first.
+      } catch (err) {
+          // Ignore the timeout error.
+          log.info('Could not find the "next" button, we\'ve reached the end.');
+          break;
+      }
+      log.info('Clicking the "next" button.');
+      await page.click(buttonSelector);
+    }
+ }
