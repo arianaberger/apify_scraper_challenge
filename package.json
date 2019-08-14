@@ -11,7 +11,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"headless": "export APIFY_HEADLESS=1 && node main.js",
-		"del": "rimraf apify_storage/* && npm run headless"
+		"del": "rimraf apify_storage && npm run headless",
+		"start": "node main"
 	},
 	"repository": {
 		"type": "git",

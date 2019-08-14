@@ -5,27 +5,37 @@ Apify.main(async () => {
 
     const homepage = 'https://www.visithoustontexas.com/events/'
 
-    const paginateQueue = await Apify.openRequestQueue();
-    await paginateQueue.addRequest(new Apify.Request({url: homepage}))
-    console.log("THE QUEUE IS:", paginateQueue)
+    const requestQueue = await Apify.openRequestQueue();
+    await requestQueue.addRequest(new Apify.Request({url: homepage}))
 
-//     const eventQueue = await Apify.openRequestQueue();
-//     await eventQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
-//     console.log(requestQueue);
-//         const eventCrawler = new Apify.PuppeteerCrawler({
-//             eventQueue,
-//             handlePageFunction: getEventData,
-//
-//             // If request failed 4 times then this function is executed.
-//             handleFailedRequestFunction: async ({ request }) => {
-//                 console.log(`Request ${request.url} failed 4 times`);
-//             },
-//         });
-//
-//         // Run crawler.
-//         await crawler.run();
-//
-//
+    const paginateCrawler = new Apify.PuppeteerCrawler({
+      requestQueue,
+      handlePageFunction: getEventURLs,
+
+      // If request failed 4 times then this function is executed.
+      handleFailedRequestFunction: async ({ request }) => {
+          console.log(`Request ${request.url} failed 4 times`);
+      },
+    })
+
+    await paginateCrawler.run();
+    //
+    // const eventQueue = await Apify.openRequestQueue();
+    // await eventQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
+    //     const eventCrawler = new Apify.PuppeteerCrawler({
+    //         eventQueue,
+    //         handlePageFunction: getEventData,
+    //
+    //         // If request failed 4 times then this function is executed.
+    //         handleFailedRequestFunction: async ({ request }) => {
+    //             console.log(`Request ${request.url} failed 4 times`);
+    //         },
+    //     });
+    //
+    //     // Run crawler.
+    //     await crawler.run();
+
+
 });
 
 // Function to get data from page
@@ -83,23 +93,19 @@ const getEventData = async ({ page, request }) => {
 ///////////////Attempt at steps 2 and 3///////////////
 
 // This function should return an array of links from each event page
-// const getEventLinks = async ({ page, request }) => {
-//   // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
-//     const pageLinks = [];
-//     const getLinks = await page.$$eval('div.eventsContainer');
-//
-//     // getLinks.forEach(link => {
-//     //   Apify.addRequest (add to the request queue)
-//     //
-//     // })
-//   // Insert links into the pageLinks array and then return the array
-//     // return pageLinks;
-//     console.log(getLinks);
-//     let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
-//     return arr;
-// }
+const getEventURLs = async ({ page, request }) => {
+    const getURLs = await page.$$eval('div[class=info] div[class=title]', (el => el.map((a) => a.href)));
+    console.log(getURLs)
+    // const urlArray = getURLs.map(div => div.querySelector('a').href);
+    // console.log(urlArray)
+    // getLinks.forEach(link => {
+    //   Apify.addRequest (add to the request queue)
+    //
+    // })
 
-// const getNextPage = async () => {
+}
+
+// const paginate = async () => {
 //     let timeout;
 //     const buttonSelector = 'a.arrow.next';
 //
