@@ -94,8 +94,12 @@ const getEventData = async ({ page, request }) => {
 
 // This function should return an array of links from each event page
 const getEventURLs = async ({ page, request }) => {
-    const getURLs = await page.$$eval('div[class=info] div[class=title]', (el => el.map((a) => a.href)));
-    console.log(getURLs)
+    const getURLs = await page.$$eval('div.info div.title', (el =>
+      el.map((div) => console.log(div))
+    ));
+
+    console.log("Event URLS:", getURLs)
+
     // const urlArray = getURLs.map(div => div.querySelector('a').href);
     // console.log(urlArray)
     // getLinks.forEach(link => {
