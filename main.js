@@ -3,41 +3,29 @@ const util = require('util');
 
 Apify.main(async () => {
 
-    // Get queue and enqueue first url.
-    const requestQueue = await Apify.openRequestQueue();
-    // Change to main events page when able to iterate over events and paginate
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
-    console.log(requestQueue);
+    const homepage = 'https://www.visithoustontexas.com/events/'
 
-    // // Tried to paginate with a for loop and add event links, but await only works in async functions
-    // for (let i = 0; i < 5; i++) {
-    //
-    //   // Iterate over each event link
-    //   getEventLinks().forEach(link => {
-    //     await requestQueue.addRequest(new Apify.Request({ url: link }));
+    const paginateQueue = await Apify.openRequestQueue();
+    await paginateQueue.addRequest(new Apify.Request({url: homepage}))
+    console.log("THE QUEUE IS:", paginateQueue)
 
-        // Create crawler
-        const crawler = new Apify.PuppeteerCrawler({
-            // How to dynamically make sure the requestQueue is updated for each link?
-            requestQueue,
-
-            // This page is executed for each request.
-            // If request failes then it's retried 3 times.
-            // Parameter page is Puppeteers page object with loaded page.
-            handlePageFunction: getEventData,
-
-            // If request failed 4 times then this function is executed.
-            handleFailedRequestFunction: async ({ request }) => {
-                console.log(`Request ${request.url} failed 4 times`);
-            },
-        });
-
-        // Run crawler.
-        await crawler.run();
-
-        // // Go to next page
-        // getNextPage();
-
+//     const eventQueue = await Apify.openRequestQueue();
+//     await eventQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
+//     console.log(requestQueue);
+//         const eventCrawler = new Apify.PuppeteerCrawler({
+//             eventQueue,
+//             handlePageFunction: getEventData,
+//
+//             // If request failed 4 times then this function is executed.
+//             handleFailedRequestFunction: async ({ request }) => {
+//                 console.log(`Request ${request.url} failed 4 times`);
+//             },
+//         });
+//
+//         // Run crawler.
+//         await crawler.run();
+//
+//
 });
 
 // Function to get data from page
@@ -88,38 +76,44 @@ const getEventData = async ({ page, request }) => {
     console.log("***EVENT DATA IS:", event);
 
     // Log data (util is a tool that nicely formats objects in the console)
-    console.log(util.inspect(title, false, null));
+    console.log(util.inspect(title, false, null, true));
+    //true makes nice and colorful
 }
 
 ///////////////Attempt at steps 2 and 3///////////////
 
 // This function should return an array of links from each event page
-const getEventLinks = async ({ page, request }) => {
-  // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
-    const pageLinks = [];
-    const getLinks = await page.$('div.eventsContainer');
-  // Insert links into the pageLinks array and then return the array
-    // return pageLinks;
-    console.log(getLinks);
-    let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
-    return arr;
-}
+// const getEventLinks = async ({ page, request }) => {
+//   // Having issues getting eventsContainer div. Use .each() to iterate over each a link once working?
+//     const pageLinks = [];
+//     const getLinks = await page.$$eval('div.eventsContainer');
+//
+//     // getLinks.forEach(link => {
+//     //   Apify.addRequest (add to the request queue)
+//     //
+//     // })
+//   // Insert links into the pageLinks array and then return the array
+//     // return pageLinks;
+//     console.log(getLinks);
+//     let arr = ["https://www.visithoustontexas.com/event/candytopia-houston/66348/", "https://www.visithoustontexas.com/event/clint-black-%26-trace-adkins-hats-hits-history-tour/68124/"]
+//     return arr;
+// }
 
-const getNextPage = async () => {
-    let timeout;
-    const buttonSelector = 'a.arrow.next';
-
-    while (true) {
-      log.info('Waiting for the "next" button...');
-      try {
-          await page.waitFor(buttonSelector, { timeout }); // Default timeout first time.
-          timeout = 2000; // 2 sec timeout after the first.
-      } catch (err) {
-          // Ignore the timeout error.
-          log.info('Could not find the "next" button, we\'ve reached the end.');
-          break;
-      }
-      log.info('Clicking the "next" button.');
-      await page.click(buttonSelector);
-    }
-}
+// const getNextPage = async () => {
+//     let timeout;
+//     const buttonSelector = 'a.arrow.next';
+//
+//     while (true) {
+//       log.info('Waiting for the "next" button...');
+//       try {
+//           await page.waitFor(buttonSelector, { timeout }); // Default timeout first time.
+//           timeout = 2000; // 2 sec timeout after the first.
+//       } catch (err) {
+//           // Ignore the timeout error.
+//           log.info('Could not find the "next" button, we\'ve reached the end.');
+//           break;
+//       }
+//       log.info('Clicking the "next" button.');
+//       await page.click(buttonSelector);
+//     }
+ // }
