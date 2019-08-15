@@ -10,7 +10,7 @@ Apify.main(async () => {
     const requestQueue = await Apify.openRequestQueue();
     await requestQueue.addRequest(new Apify.Request({url: homepage}))
 
-    // Setup and run paginate crawler
+    // Setup and run paginate crawler:
     const paginateCrawler = new Apify.PuppeteerCrawler({
       requestQueue,
       handlePageFunction: getEventURLs,
@@ -23,20 +23,20 @@ Apify.main(async () => {
 
     await paginateCrawler.run();
 
-    // Setup and run event crawler
-    // console.log(requestQueue)
-    // const eventCrawler = new Apify.PuppeteerCrawler({
-    //     requestQueue,
-    //     handlePageFunction: getEventData,
-    //
-    //     // If request failed 4 times then this function is executed.
-    //     handleFailedRequestFunction: async ({ request }) => {
-    //         console.log(`Request ${request.url} failed 4 times`);
-    //     },
-    // });
-    //
-    // // Run crawler.
-    // await eventCrawler.run();
+    // Setup and run event crawler after paginate crawler is done adding to the request queue:
+    console.log(requestQueue)
+    const eventCrawler = new Apify.PuppeteerCrawler({
+        requestQueue,
+        handlePageFunction: getEventData,
+
+        // If request failed 4 times then this function is executed.
+        handleFailedRequestFunction: async ({ request }) => {
+            console.log(`Request ${request.url} failed 4 times`);
+        },
+    });
+
+    // Run crawler.
+    await eventCrawler.run();
 
 });
 
@@ -89,7 +89,6 @@ const getEventData = async ({ page, request }) => {
     // Print and save scraped event data
     console.log("EVENT DATA:", event)
     const jsonData = JSON.stringify(event);
-
     fs.writeFile('eventData.text', jsonData, function (err) {
       if (err) {
         console.log("There was an error saving event data")
@@ -103,31 +102,23 @@ const getEventData = async ({ page, request }) => {
 }
 
 const getEventURLs = async ({ page, request }) => {
-    // This works to get a url in the console, but so far only getting an empty array or undefined:
-    // document.querySelectorAll('div.info div.title')[0].querySelector('a').href
-
-    const getURLs = await page.$$eval('div.info div.title a', (a =>
-      a.map((a) => a.href) //printing empty arrays
-    ));
+    const getURLs = await page.$$eval('div.info div.title a',(a => a.map((a) => a.href)));
     console.log(getURLs)
-    
-    // const url = await page.$$eval('div[class=info] div[class=title] a', el => el.href)
-    // console.log(url)
 
+    // Attempt at getting urls incorporating pagination from first 4 pages:
 
-    // const getURLs = [
-    //   'https://www.visithoustontexas.com/event/bubbles-and-baubles-a-james-beard-foundation-benefit/68172/',
-    //   'https://www.visithoustontexas.com/event/candytopia-houston/66348/'
-    // ]
-    //
+    // let getURLs;
+    // for (let i = 0; i === 3; i++) {
+    //   await page.$$eval('div.info div.title a',(a => a.map((a) => getURLs.push(a.href))));
+    //   paginateFunction();
+    // }
+
+    // Once getURLs array is complete, all urls will be added to the request queue:
+
     // const requestQueue = await Apify.openRequestQueue();
-    //
     // getURLs.forEach(async (link) => {
     //   await requestQueue.addRequest(new Apify.Request({url: link}));
     // })
-    //
-    // Incorporate paginate functionality
-    // paginateFunction();
 }
 
 const paginateFunction = async () => {

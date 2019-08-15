@@ -19,7 +19,7 @@ $ git clone git@github.com:arianaberger/apify_scraper_challenge.git
 npm install -g apify-cli
 ```
 
-4. Enter the following in your console to run the web crawler. Event data will be logged in the console and saved to a text file. Make sure to delete the 'apify_storage' folder before re-running the crawler.
+4. Enter the following in your console to run the web crawler. Event data will be logged in the console and saved to a text file and event links from the events main page will be logged to the console. Make sure to delete the 'apify_storage' folder before re-running the crawler.
 
 ```bash
 npm start
