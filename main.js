@@ -4,37 +4,38 @@ const fs = require('fs');
 
 Apify.main(async () => {
 
-    // const homepage = 'https://www.visithoustontexas.com/events/'
-    //
-    // const requestQueue = await Apify.openRequestQueue();
-    // await requestQueue.addRequest(new Apify.Request({url: homepage}))
-    //
-    // const paginateCrawler = new Apify.PuppeteerCrawler({
-    //   requestQueue,
-    //   handlePageFunction: getEventURLs,
-    //
-    //   // If request failed 4 times then this function is executed.
-    //   handleFailedRequestFunction: async ({ request }) => {
-    //       console.log(`Request ${request.url} failed 4 times`);
-    //   },
-    // })
-    //
-    // await paginateCrawler.run();
+    const homepage = 'https://www.visithoustontexas.com/events/'
 
     const requestQueue = await Apify.openRequestQueue();
-    await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
-        const eventCrawler = new Apify.PuppeteerCrawler({
-            requestQueue,
-            handlePageFunction: getEventData,
+    await requestQueue.addRequest(new Apify.Request({url: homepage}))
+    // await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
 
-            // If request failed 4 times then this function is executed.
-            handleFailedRequestFunction: async ({ request }) => {
-                console.log(`Request ${request.url} failed 4 times`);
-            },
-        });
+    // Setup and run paginate crawler
+    const paginateCrawler = new Apify.PuppeteerCrawler({
+      requestQueue,
+      handlePageFunction: getEventURLs,
 
-        // Run crawler.
-        await eventCrawler.run();
+      // If request failed 4 times then this function is executed.
+      handleFailedRequestFunction: async ({ request }) => {
+          console.log(`Request ${request.url} failed 4 times`);
+      },
+    })
+
+    await paginateCrawler.run();
+
+    // Setup and run event crawler
+    const eventCrawler = new Apify.PuppeteerCrawler({
+        requestQueue,
+        handlePageFunction: getEventData,
+
+        // If request failed 4 times then this function is executed.
+        handleFailedRequestFunction: async ({ request }) => {
+            console.log(`Request ${request.url} failed 4 times`);
+        },
+    });
+
+    // Run crawler.
+    await eventCrawler.run();
 
 });
 
@@ -45,6 +46,8 @@ const getEventData = async ({ page, request }) => {
     const url = await page.url();
     const description = await page.$eval('div[class^=description] p', (el => el.textContent));
     const date = await page.$eval('div[class=dates]', (el => el.textContent));
+
+    // Ideally pull out repetitive 'detail-c2' class to avoid issues with missing data
     const time = await page.$eval('div[class^=detail-c2] div:nth-of-type(7)', (el => el.textContent.slice(7)));
     const recurring = await page.$eval('div[class^=detail-c2] div:nth-of-type(2)', (el => el.textContent));
     const contact = await page.$eval('div[class^=detail-c2] div:nth-of-type(5)', (el => el.textContent.slice(9)));
@@ -96,22 +99,24 @@ const getEventData = async ({ page, request }) => {
 
     // Log data (util is a tool that nicely formats objects in the console, use true to add colors)
     console.log(util.inspect(title, false, null, true));
-
 }
 
 const getEventURLs = async ({ page, request }) => {
-    // This works to get a url in the console, isn't translating here for some reason:
+    // This works to get a url in the console, but so far only getting an empty array or undefined:
     // document.querySelectorAll('div.info div.title')[0].querySelector('a').href
     const getURLs = await page.$$eval('div.info div.title', (el =>
-      el.map((div) => console.log(div))
+      el.map((div) => console.log(div)) //printing empty arrays
     ));
 
     getURLs.forEach(link => {
-      Apify.addRequest(new Apify.Request({url: link}))
+      Apify.addRequest(new Apify.Request({url: link}));
     })
+
+    // Incorporate paginate functionality
+    // paginateFunction();
 }
 
-const paginate = async () => {
+const paginateFunction = async () => {
     let timeout;
     const buttonSelector = 'a.arrow.next';
 
@@ -126,6 +131,7 @@ const paginate = async () => {
           break;
       }
       log.info('Clicking the "next" button.');
+      //instead of clicking on the button we can also just grab the actual link and incremement the page value
       await page.click(buttonSelector);
     }
  }
