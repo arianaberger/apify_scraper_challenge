@@ -24,19 +24,18 @@ Apify.main(async () => {
     await paginateCrawler.run();
 
     // Setup and run event crawler after paginate crawler is done adding to the request queue:
-    // console.log(requestQueue)
-    // const eventCrawler = new Apify.PuppeteerCrawler({
-    //     requestQueue,
-    //     handlePageFunction: getEventData,
-    //
-    //     // If request failed 4 times then this function is executed.
-    //     handleFailedRequestFunction: async ({ request }) => {
-    //         console.log(`Request ${request.url} failed 4 times`);
-    //     },
-    // });
-    //
-    // // Run crawler.
-    // await eventCrawler.run();
+    console.log(requestQueue)
+    const eventCrawler = new Apify.PuppeteerCrawler({
+        requestQueue,
+        handlePageFunction: getEventData,
+
+        // If request failed 4 times then this function is executed.
+        handleFailedRequestFunction: async ({ request }) => {
+            console.log(`Request ${request.url} failed 4 times`);
+        },
+    });
+
+    await eventCrawler.run();
 
 });
 
@@ -112,7 +111,7 @@ const getEventURLs = async ({ page, request }) => {
     // let getURLs;
     // for (let i = 0; i === 3; i++) {
     //   await page.$$eval('div.info div.title a',(a => a.map((a) => getURLs.push(a.href))));
-    //   paginateFunction();
+    //   paginateFunction();  // Currently giving me undefined
     // }
 
     // Once getURLs array is complete, all urls will be added to the request queue:
