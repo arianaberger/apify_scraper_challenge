@@ -24,6 +24,7 @@ Apify.main(async () => {
     await paginateCrawler.run();
 
     // Setup and run event crawler
+    console.log(requestQueue)
     const eventCrawler = new Apify.PuppeteerCrawler({
         requestQueue,
         handlePageFunction: getEventData,
@@ -104,12 +105,20 @@ const getEventData = async ({ page, request }) => {
 const getEventURLs = async ({ page, request }) => {
     // This works to get a url in the console, but so far only getting an empty array or undefined:
     // document.querySelectorAll('div.info div.title')[0].querySelector('a').href
-    const getURLs = await page.$$eval('div.info div.title', (el =>
-      el.map((div) => console.log(div)) //printing empty arrays
-    ));
 
-    getURLs.forEach(link => {
-      Apify.addRequest(new Apify.Request({url: link}));
+    // const getURLs = await page.$$eval('div.info div.title', (el =>
+    //   el.map((div) => console.log(div)) //printing empty arrays
+    // ));
+
+    const getURLs = [
+      'https://www.visithoustontexas.com/event/bubbles-and-baubles-a-james-beard-foundation-benefit/68172/',
+      'https://www.visithoustontexas.com/event/candytopia-houston/66348/'
+    ]
+
+    const requestQueue = await Apify.openRequestQueue();
+
+    getURLs.forEach(async (link) => {
+      await requestQueue.addRequest(new Apify.Request({url: link}));
     })
 
     // Incorporate paginate functionality
