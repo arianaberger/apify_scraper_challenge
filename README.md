@@ -1,5 +1,7 @@
 <h1 align="center">Explore Houston with Puppeteer</h1>
 
+![Houston](,/houston.jpg?raw=true "Title")
+
 <h2>About</h3>
 This application scrapes the events page of visithoustontexas.com to see what events are coming up, along with all the information you need to know about them to get involved.
 
@@ -11,7 +13,7 @@ This application scrapes the events page of visithoustontexas.com to see what ev
 $ git clone git@github.com:arianaberger/apify_scraper_challenge.git
 ```
 
-2. Make sure that you have node and npm installed on your computer by checking out <a href='https://nodejs.org/en/download/'>NodeJs</a> or use <a href='https://github.com/nvm-sh/nvm'>nvm</a>
+2. Make sure that you have node and npm installed on your computer by checking out <a href='https://nodejs.org/en/download/'>NodeJs</a> or use <a href='https://github.com/nvm-sh/nvm'>nvm</a>.
 
 3. Install the Apify CLI:
 
@@ -24,3 +26,5 @@ npm install -g apify-cli
 ```bash
 npm start
 ```
+
+Read about my coding experience <a href='https://thebergermeister.wordpress.com/2019/08/05/code-challenge-web-crawler/'>here</a>.
