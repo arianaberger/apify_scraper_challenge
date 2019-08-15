@@ -5,10 +5,10 @@ const fs = require('fs');
 Apify.main(async () => {
 
     const homepage = 'https://www.visithoustontexas.com/events/'
+    // const homepage = 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/'
 
     const requestQueue = await Apify.openRequestQueue();
     await requestQueue.addRequest(new Apify.Request({url: homepage}))
-    // await requestQueue.addRequest(new Apify.Request({ url: 'https://www.visithoustontexas.com/event/zumba-in-the-plaza/59011/' }));
 
     // Setup and run paginate crawler
     const paginateCrawler = new Apify.PuppeteerCrawler({
@@ -24,19 +24,19 @@ Apify.main(async () => {
     await paginateCrawler.run();
 
     // Setup and run event crawler
-    console.log(requestQueue)
-    const eventCrawler = new Apify.PuppeteerCrawler({
-        requestQueue,
-        handlePageFunction: getEventData,
-
-        // If request failed 4 times then this function is executed.
-        handleFailedRequestFunction: async ({ request }) => {
-            console.log(`Request ${request.url} failed 4 times`);
-        },
-    });
-
-    // Run crawler.
-    await eventCrawler.run();
+    // console.log(requestQueue)
+    // const eventCrawler = new Apify.PuppeteerCrawler({
+    //     requestQueue,
+    //     handlePageFunction: getEventData,
+    //
+    //     // If request failed 4 times then this function is executed.
+    //     handleFailedRequestFunction: async ({ request }) => {
+    //         console.log(`Request ${request.url} failed 4 times`);
+    //     },
+    // });
+    //
+    // // Run crawler.
+    // await eventCrawler.run();
 
 });
 
@@ -106,21 +106,26 @@ const getEventURLs = async ({ page, request }) => {
     // This works to get a url in the console, but so far only getting an empty array or undefined:
     // document.querySelectorAll('div.info div.title')[0].querySelector('a').href
 
-    // const getURLs = await page.$$eval('div.info div.title', (el =>
-    //   el.map((div) => console.log(div)) //printing empty arrays
-    // ));
+    const getURLs = await page.$$eval('div.info div.title a', (a =>
+      a.map((a) => a.href) //printing empty arrays
+    ));
+    console.log(getURLs)
+    
+    // const url = await page.$$eval('div[class=info] div[class=title] a', el => el.href)
+    // console.log(url)
 
-    const getURLs = [
-      'https://www.visithoustontexas.com/event/bubbles-and-baubles-a-james-beard-foundation-benefit/68172/',
-      'https://www.visithoustontexas.com/event/candytopia-houston/66348/'
-    ]
 
-    const requestQueue = await Apify.openRequestQueue();
-
-    getURLs.forEach(async (link) => {
-      await requestQueue.addRequest(new Apify.Request({url: link}));
-    })
-
+    // const getURLs = [
+    //   'https://www.visithoustontexas.com/event/bubbles-and-baubles-a-james-beard-foundation-benefit/68172/',
+    //   'https://www.visithoustontexas.com/event/candytopia-houston/66348/'
+    // ]
+    //
+    // const requestQueue = await Apify.openRequestQueue();
+    //
+    // getURLs.forEach(async (link) => {
+    //   await requestQueue.addRequest(new Apify.Request({url: link}));
+    // })
+    //
     // Incorporate paginate functionality
     // paginateFunction();
 }
