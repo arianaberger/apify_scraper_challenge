@@ -1,6 +1,6 @@
 <h1 align="center">Explore Houston with Puppeteer</h1>
 
-![Houston](./houston.jpg?raw=true "Title")
+![Houston](houston.jpg?raw=true "Title")
 
 <h2>About</h3>
 This application scrapes the events page of visithoustontexas.com to see what events are coming up, along with all the information you need to know about them to get involved.
