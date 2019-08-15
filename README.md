@@ -5,21 +5,21 @@ This application scrapes the events page of visithoustontexas.com to see what ev
 
 <h2>Instructions</h3>
 
-Clone this repo
+1. Clone this repo:
 
 ```bash
 $ git clone git@github.com:arianaberger/apify_scraper_challenge.git
 ```
 
-Make sure that you have node and npm installed on your computer by checking out <a href='https://nodejs.org/en/download/'>NodeJs</a> or use <a href='https://github.com/nvm-sh/nvm'>nvm</a>
+2. Make sure that you have node and npm installed on your computer by checking out <a href='https://nodejs.org/en/download/'>NodeJs</a> or use <a href='https://github.com/nvm-sh/nvm'>nvm</a>
 
-Install the Apify CLI:
+3. Install the Apify CLI:
 
 ```bash
 npm install -g apify-cli
 ```
 
-Enter the following in your console to run the web crawler. Event data will be logged in the console and saved to a text file. Make sure to delete the 'apify_storage' folder before re-running the crawler.
+4. Enter the following in your console to run the web crawler. Event data will be logged in the console and saved to a text file. Make sure to delete the 'apify_storage' folder before re-running the crawler.
 
 ```bash
 npm start
