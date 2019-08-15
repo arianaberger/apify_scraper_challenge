@@ -1,14 +1,10 @@
-<h1 align="center">What's Going on in Houston?</h1>
-<h2 align="center">Find out with Puppeteer</h2>
+<h1 align="center">What's Going on Houston? Using Puppeteer</h1>
 
-
-<h3 align="center">About</h3>
-<p align="center">
-  This application scrapes the events page of visithoustontexas.com to see what events are coming up, along with all the information you need to know about them to get involved.
-</p>
+<h2>About</h3>
+This application scrapes the events page of visithoustontexas.com to see what events are coming up, along with all the information you need to know about them to get involved.
 <hr>
 
-<h3>Instructions</h3>
+<h2>Instructions</h3>
 
 Clone this repo
 
