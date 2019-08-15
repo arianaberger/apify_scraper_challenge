@@ -11,7 +11,13 @@ Clone this repo
 $ git clone git@github.com:arianaberger/apify_scraper_challenge.git
 ```
 
-Read the initial instructions on the Apify website to make sure that you have node and npm installed on your computer: <a href='https://sdk.apify.com/docs/guides/gettingstarted'>Apify Docs</a>
+Make sure that you have node and npm installed on your computer by checking out <a href='https://nodejs.org/en/download/'>NodeJs</a> or use <a href='https://github.com/nvm-sh/nvm'>nvm</a>
+
+Install the Apify CLI:
+
+```bash
+npm install -g apify-cli
+```
 
 Enter the following in your console to run the web crawler. Event data will be logged in the console and saved to a text file. Make sure to delete the 'apify_storage' folder before re-running the crawler.
 
