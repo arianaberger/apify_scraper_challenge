@@ -5,13 +5,14 @@
 	"main": "main.js",
 	"dependencies": {
 		"apify": "^0.15.2",
+		"rimraf": "^3.0.0",
 		"util": "^0.11.1"
 	},
 	"devDependencies": {},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "export APIFY_HEADLESS=1 && node main.js",
-		"del": "rimraf apify_storage && npm run headless"
+		"del": "rimraf apify_storage/* && npm run headless"
 	},
 	"repository": {
 		"type": "git",

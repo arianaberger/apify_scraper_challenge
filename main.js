@@ -85,7 +85,8 @@ const getEventData = async ({ page, request }) => {
     // Print and save scraped event data
     console.log("EVENT DATA:", event)
     const jsonData = JSON.stringify(event);
-    fs.writeFile('eventData.json', jsonData, function (err) {
+
+    fs.writeFile('eventData.text', jsonData, function (err) {
       if (err) {
         console.log("There was an error saving event data")
         return console.log(err)
@@ -93,11 +94,10 @@ const getEventData = async ({ page, request }) => {
       console.log("Event data has been saved")
     })
 
-    // Log data (util is a tool that nicely formats objects in the console)
+    // Log data (util is a tool that nicely formats objects in the console, use true to add colors)
     console.log(util.inspect(title, false, null, true));
-    //true makes nice and colorful
-}
 
+}
 
 const getEventURLs = async ({ page, request }) => {
     // This works to get a url in the console, isn't translating here for some reason:
