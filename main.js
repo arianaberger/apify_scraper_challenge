@@ -24,7 +24,7 @@ Apify.main(async () => {
     await paginateCrawler.run();
 
     // Setup and run event crawler after paginate crawler is done adding to the request queue:
-    console.log(requestQueue)
+    // console.log(requestQueue)
     const eventCrawler = new Apify.PuppeteerCrawler({
         requestQueue,
         handlePageFunction: getEventData,
@@ -114,11 +114,11 @@ const getEventURLs = async ({ page, request }) => {
     //   paginateFunction();  // Currently giving me undefined
     // }
 
-    // Once getURLs array is complete, all urls will be added to the request queue:
-
-    // const requestQueue = await Apify.openRequestQueue();
-    // getURLs.forEach(async (link) => {
-    //   await requestQueue.addRequest(new Apify.Request({url: link}));
+    // Once getURLs array is complete, all urls will be added to the request queue
+    // Currently giving promise error, not handled with a catch block
+    
+    // urls.forEach(async (url) => {
+    //   await request.addRequest(new Apify.Request({url: url}));
     // })
 }
 
